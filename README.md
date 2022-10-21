@@ -1,2 +1,2 @@
-# simple-component-simces
-Simple Component for SimCES
+# complex-component-simces
+Complex Component for SimCES
