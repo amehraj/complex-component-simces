@@ -15,6 +15,7 @@ from complex_component.complex_message import ComplexMessage
 LOGGER = FullLogger(__name__)
 
 COMPLEX_VALUE = "COMPLEX_VALUE"
+COMPLEX_STRING = "COMPLEX_STRING"
 
 #Ask Ville
 SIMPLE_TOPIC = "SIMPLE_TOPIC" 
@@ -27,12 +28,14 @@ class ComplexComponent(AbstractSimulationComponent):
     def __init__(
             self,
             complex_value: float,
+            complex_string: str,
             input_components: Set[str],
             output_delay: float):
 
         super().__init__()
 
         self._complex_value = complex_value
+        self._complex_string = complex_string
         self._current_number_sum = 0.0
         self._current_input_components = set()
 
@@ -72,7 +75,8 @@ class ComplexComponent(AbstractSimulationComponent):
 
         # set the number value used in the output message
         if self._current_input_components:
-            self._current_number_sum = round(self._current_number_sum * self._complex_value, 3)
+            if self._complex_string == "Correct":
+                self._current_number_sum = round(self._current_number_sum * self._complex_value, 3)
         else:
             self._current_number_sum = round(self._complex_value * self._latest_epoch / 1000, 3)
 
@@ -109,7 +113,7 @@ class ComplexComponent(AbstractSimulationComponent):
 
             else:
                 self._current_input_components.add(message_object.source_process_id)
-                self._current_number_sum = round(self._current_number_sum + message_object.simple_value, 3)
+                self._current_number_sum = round(self._current_number_sum * message_object.complex_value, 3)
                 LOGGER.debug(f"Received ComplexMessage from {message_object.source_process_id}")
 
                 self._triggering_message_ids.append(message_object.message_id)
@@ -152,6 +156,7 @@ def create_component() -> ComplexComponent:
     # Read the parameters for the component from the environment variables.
     environment_variables = load_environmental_variables(
         (COMPLEX_VALUE, float, 1.0),   # the value to be added for SimpleValue attribute
+        (COMPLEX_STRING, str, ""),
         (INPUT_COMPONENTS, str, ""),  # the comma-separated list of component names that provide input
         (OUTPUT_DELAY, float, 0.0)    # delay in seconds before sending the result message for the epoch
     )
@@ -170,6 +175,7 @@ def create_component() -> ComplexComponent:
     # Create and return a new SimpleComponent object using the values from the environment variables
     return ComplexComponent(
         complex_value=complex_value,
+        complex_string = complex_string,
         input_components=input_components,
         output_delay=output_delay
     )

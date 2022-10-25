@@ -14,9 +14,12 @@ class ComplexMessage(AbstractResultMessage):
 
     COMPLEX_VALUE_ATTRIBUTE = "ComplexValue"
     COMPLEX_VALUE_PROPERTY = "complex_value"
+    COMPLEX_STRING_ATTRIBUTE = "ComplexString"
+    COMPLEX_STRING_PROPERTY = "complex_string"
 
     MESSAGE_ATTRIBUTES = {
-        COMPLEX_VALUE_ATTRIBUTE : COMPLEX_VALUE_PROPERTY
+        COMPLEX_VALUE_ATTRIBUTE : COMPLEX_VALUE_PROPERTY,
+        COMPLEX_STRING_ATTRIBUTE : COMPLEX_STRING_PROPERTY,
     }
     # list all attributes that are optional here (use the JSON attribute names)
     OPTIONAL_ATTRIBUTES = []
@@ -54,6 +57,9 @@ class ComplexMessage(AbstractResultMessage):
     def complex_value(self) -> float:
         return self.complex_value
 
+    @property
+    def complex_string(self) -> float:
+        return self.complex_string
 
     @complex_value.setter
     def complex_value(self, complex_value: float):
@@ -62,17 +68,28 @@ class ComplexMessage(AbstractResultMessage):
         else:
             raise MessageValueError(f"Invalid value for ComplexValue: {complex_value}")
 
+    @complex_string.setter
+    def complex_string(self, complex_string: str):
+        if self._check_complex_string(complex_string):
+            self.__complex_string = complex_string
+        else:
+            raise MessageValueError(f"Invalid value for ComplexValue: {complex_string}")
+
     def __eq__(self, other: Any) -> bool:
         return (
             super().__eq__(other) and
             isinstance(other, ComplexMessage) and
-            self.complex_value == other.complex_value
+            self.complex_value == other.complex_value and
+            self.complex_string == other.complex_string
         )
 
     @classmethod
     def _check_complex_value(cls, complex_value: float) -> bool:
         return isinstance(complex_value, float)
 
+    @classmethod
+    def _check_complex_string(cls, complex_value: str) -> bool:
+        return isinstance(complex_value, str)
 
     @classmethod
     def from_json(cls, json_message: Dict[str, Any]) -> Optional[ComplexMessage]:

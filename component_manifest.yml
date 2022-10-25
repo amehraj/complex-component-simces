@@ -8,6 +8,9 @@ Attributes:
     ComplexValue:
         Environment: COMPLEX_VALUE
         Optional: false
+    ComplexString:
+        Environment: COMPLEX_STRING
+        Optional: false
     InputComponents:
         Environment: INPUT_COMPONENTS
         Optional: true
