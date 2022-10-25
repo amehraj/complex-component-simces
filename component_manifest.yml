@@ -1,0 +1,18 @@
+# The component manifest file for the Complex test component
+
+Name: ComplexComponent
+Type: platform
+Description: "Complex test component for the Decoupled Simulation Platform"
+DockerImage: complexcomponentlocal
+Attributes:
+    ComplexValue:
+        Environment: COMPLEX_VALUE
+        Optional: false
+    InputComponents:
+        Environment: INPUT_COMPONENTS
+        Optional: true
+        Default: ""
+    OutputDelay:
+        Environment: OUTPUT_DELAY
+        Optional: true
+        Default: 0.0
